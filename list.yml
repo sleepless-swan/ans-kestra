@@ -1,32 +1,12 @@
-id: ansible
-namespace: company
+---
+- name: "Playing with Ansible and Git"
+  hosts: localhost
+  connection: local
+  tasks:
 
-tasks:
-  - id: setup
-    type: io.kestra.core.tasks.flows.WorkingDirectory
-    tasks:
-      - id: local_files
-        type: io.kestra.core.tasks.storages.LocalFiles
-        inputs:
-          inventory.ini: |
-            localhost ansible_connection=local
-          myplaybook.yml: |
-            ---
-              - name: "Playing with Ansible and Git"
-                hosts: localhost
-                connection: local
-                tasks:
+   - name: "just execute a ls -lrt command"
+     shell: "ls -lrt"
+		 register: "output"
 
-                - name: "just execute a ls -lrt command"
-                  shell: "ls -lrt"
-                  register: "output"
-
-                - debug: var=output.stdout_lines
+   - debug: var=output.stdout_lines
                                                                                                                                                
-
-      - id: ansible_task
-        type: io.kestra.plugin.ansible.cli.AnsibleCLI
-        docker:
-          image: cytopia/ansible:latest-tools
-        commands:
-          - ansible-playbook -i inventory.ini myplaybook.yml
